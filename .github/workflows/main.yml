@@ -10,6 +10,7 @@ jobs:
   initialize:
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v2
       - name: Initialize LXC container
         run: |
           echo "[INFO] -- Restoring ghRunner to freshContainer snapshot"
@@ -21,11 +22,12 @@ jobs:
           echo "[INFO] -- Cloning: https://github.com/datasys-classrooms/cs553-fall2022-hw2-testing.git"
           git clone https://github.com/datasys-classrooms/cs553-fall2022-hw2-testing.git
           echo "[INFO] -- Extracting contents in cs553-fall2022-hw2-testing"
-          mv cs553-fall2022-hw2-testing/* .
+          mv cs553-fall2022-hw2-testing/check-submission.sh .
           echo "[INFO] -- Removing directory cs553-fall2022-hw2-testing"          
           rm -r cs553-fall2022-hw2-testing
           echo "[INFO] -- Copying contents to /home/hoplite/runner-data"
           cp -a * /home/hoplite/runner-data
+          sleep 5
         
   main-work:
     needs: initialize
@@ -39,10 +41,7 @@ jobs:
           username: hoplite
           password: 123
           command: |
-            ls
-            pwd
             bash check-submission.sh all
-            ls
             
   cleanup:
     needs: [initialize, main-work]
